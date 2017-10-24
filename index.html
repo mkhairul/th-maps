@@ -35,6 +35,7 @@
       border-radius: 2px;
       overflow:scroll;
     }
+    .petugas-title{ margin-bottom: 1px; }
   </style>
 </head>
 <body>
@@ -80,8 +81,8 @@
     var getTrackingInfo = function(){
       setTimeout(function(){
         console.log('Updating Markers');
-        map.removeMarkers();
-        markers = [];
+        //map.removeMarkers();
+        //markers = [];
         firebase.database().ref('/tracking/').once('value').then(function(snapshot) {
           //console.log(snapshot.val());
           var result = snapshot.val();
@@ -100,24 +101,54 @@
             //if(elapsed_ms < 120000){
             
               // Generate Content
-              var beacon_html = '';
+              var beacon_html = '<h3 class="petugas-title">Petugas: ' + result[key].name + '</h3>';
               for(var beacon in result[key].beacons){
-                beacon_html += $($('<div>').html(result[key].beacons[beacon].name + ': ' + result[key].beacons[beacon].distance + 'm')).html();
+                //beacon_html += $($('<div>').html(result[key].beacons[beacon].name + ': ' + result[key].beacons[beacon].distance + 'm')).html();
+                beacon_html += "<div><strong>" + result[key].beacons[beacon].name + ":</strong> " + result[key].beacons[beacon].distance + "m</div>";
               }
+              
+              // Check if marker exists
+              if(markers.length > 0)
+              {
+                for(var marker in markers){
+                  if(marker.id === key){
+                    marker.setPosition(new google.maps.LatLng(result[key].lat, result[key].long));
+                    console.log('Updating Position');
+                  }else{
+                    var marker = map.addMarker({
+                      id: key,
+                      lat: result[key].lat,
+                      lng: result[key].long,
+                      title: result[key].name,
+                      infoWindow: {
+                        content: beacon_html
+                      }
+                    });
+                    //console.log(marker);
+                    markers.push[marker];
+                    $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
+                      map.setCenter(result[key].lat, result[key].long);
+                    }));
 
-              var marker = map.addMarker({
-                lat: result[key].lat,
-                lng: result[key].long,
-                title: result[key].name,
-                infoWindow: {
-                  content: beacon_html
+                  }
                 }
-              });
-              //console.log(marker);
-              markers.push[marker];
-              $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
-                map.setCenter(result[key].lat, result[key].long);
-              }));
+              }else{
+                var marker = map.addMarker({
+                  id: key,
+                  lat: result[key].lat,
+                  lng: result[key].long,
+                  title: result[key].name,
+                  infoWindow: {
+                    content: beacon_html
+                  }
+                });
+                //console.log(marker);
+                markers.push[marker];
+                $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
+                  map.setCenter(result[key].lat, result[key].long);
+                }));
+              }
+              
             //}
           }
           
