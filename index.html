@@ -94,14 +94,17 @@
             */
             
             // Generate Content
-            
+            var beacon_html = '';
+            for(var beacon in result[key].beacons){
+              beacon_html += $($('<div>').html(result[key].beacons[beacon].name + ': ' + result[key].beacons[beacon].distance + 'm')).html();
+            }
 
             var marker = map.addMarker({
               lat: result[key].lat,
               lng: result[key].long,
               title: result[key].name,
               infoWindow: {
-                content: JSON.stringify(result[key].beacons)
+                content: beacon_html
               }
             });
             //console.log(marker);
