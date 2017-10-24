@@ -80,7 +80,7 @@
     var getTrackingInfo = function(){
       setTimeout(function(){
         console.log('Updating Markers');
-        map.removeMarker(markers);
+        map.removeMarkers(markers);
         markers = [];
         firebase.database().ref('/tracking/').once('value').then(function(snapshot) {
           console.log(snapshot.val());
