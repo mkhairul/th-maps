@@ -104,7 +104,10 @@
               var beacon_html = '<h3 class="petugas-title">Petugas: ' + result[key].name + '</h3>';
               for(var beacon in result[key].beacons){
                 //beacon_html += $($('<div>').html(result[key].beacons[beacon].name + ': ' + result[key].beacons[beacon].distance + 'm')).html();
-                beacon_html += "<div><strong>" + result[key].beacons[beacon].name + ":</strong> " + result[key].beacons[beacon].distance + "m</div>";
+                var elapsed_beacon = moment().diff(moment(result[key].lastUpdated));
+                if(elapsed_beacon < 120000){
+                  beacon_html += "<div><strong>" + result[key].beacons[beacon].name + ":</strong> " + result[key].beacons[beacon].distance + "m</div>";
+                }
               }
               
               // Check if marker exists
@@ -113,6 +116,7 @@
                 for(var marker in markers){
                   if(marker.id === key){
                     marker.setPosition(new google.maps.LatLng(result[key].lat, result[key].long));
+                    marker.infoWindow.setContent(beacon_html);
                     console.log('Updating Position');
                   }else{
                     var marker = map.addMarker({
