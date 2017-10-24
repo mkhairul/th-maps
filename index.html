@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title></title>
+  <script src="http://maps.google.com/maps/api/js?key=AIzaSyCMxvyxlbxLjhDxJxinEgNFX6meaAfcW-I"></script>
+  <script src="js/gmaps.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
+  <script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+  <style type="text/css">
+    html, body{
+        height: 100%;
+    }
+    #map {
+      width: 80%;
+      height: 90%;
+      position: relative;
+      background: #fff;
+      padding: 15px;
+      box-shadow: 0 0 20px #999;
+      border-radius: 2px;
+    }
+    #users{
+      width:15%;
+      height: 90%;
+      position: relative;
+      background: #fff;
+      padding: 15px;
+      box-shadow: 0 0 20px #999;
+      border-radius: 2px;
+      overflow:scroll;
+    }
+  </style>
+</head>
+<body>
+  <div id="map"></div>
+  <div id="users">
+    <ul></ul>
+  </div>
+  <script>
+    
+    var config = {
+      apiKey: "AIzaSyAHJaNRX8f7gi2TtDQ-m5PwvSuhop5YLD4",
+      authDomain: "th-smartlink.firebaseapp.com",
+      databaseURL: "https://th-smartlink.firebaseio.com/",
+      storageBucket: "th-smartlink.appspot.com/",
+    };
+    firebase.initializeApp(config);
+    firebase.auth().onAuthStateChanged(function(user) {
+      if (user) {
+        console.log('Logged In!');
+        // User is signed in.
+        var isAnonymous = user.isAnonymous;
+        var uid = user.uid;
+        // ...
+      } else {
+        // User is signed out.
+        // ...
+      }
+      // ...
+    });
+    firebase.auth().signInAnonymously().catch(function(error) {
+      // Handle Errors here.
+      var errorCode = error.code;
+      var errorMessage = error.message;
+      // ...
+    });
+    
+    var map = new GMaps({
+      el: '#map',
+      lat: 3.1466,
+      lng: 101.6958
+    });
+    
+    var getTrackingInfo = function(){
+      setTimeout(function(){
+        console.log('Updating Markers');
+        map.removeMarker[markers];
+        markers = [];
+        firebase.database().ref('/tracking/').once('value').then(function(snapshot) {
+          console.log(snapshot.val());
+          var result = snapshot.val();
+          for(var key in result){
+            /*
+            $.get( "ajax/test.html", function( data ) {
+              $( ".result" ).html( data );
+              alert( "Load was performed." );
+            });
+            */
+            
+            // Generate Content
+            
+
+            var marker = map.addMarker({
+              lat: result[key].lat,
+              lng: result[key].long,
+              title: result[key].name,
+              infoWindow: {
+                content: JSON.stringify(result[key].beacons)
+              }
+            });
+            console.log(marker);
+            markers.push[marker];
+
+          }
+          
+          getTrackingInfo();
+          //var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
+          // ...
+        });
+      }, 2000);
+    }
+    getTrackingInfo();
+    
+    var markers = [];
+    
+    GMaps.geolocate({
+      success: function(position){
+        map.setCenter(position.coords.latitude, position.coords.longitude);
+      },
+      error: function(error){
+        alert('Geolocation failed: '+error.message);
+      },
+      not_supported: function(){
+        alert("Your browser does not support geolocation");
+      },
+      always: function(){
+        //alert("Done!");
+      }
+    });
+  </script>
+</body>
+</html>
