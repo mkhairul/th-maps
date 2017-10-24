@@ -135,6 +135,7 @@
       for (var i = 0; i < markersArray.length; i++ ) {
         console.log('removing marker');
         markersArray[i].setMap(null);
+        map.removeMarker(markersArray[i]);
       }
       markersArray.length = 0;
     }
