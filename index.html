@@ -4,6 +4,7 @@
   <title></title>
   <script src="https://maps.google.com/maps/api/js?key=AIzaSyCMxvyxlbxLjhDxJxinEgNFX6meaAfcW-I"></script>
   <script src="js/gmaps.js"></script>
+  <script src="js/moment.js"></script>
   <script src="https://www.gstatic.com/firebasejs/4.5.0/firebase.js"></script>
   <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -79,7 +80,7 @@
     var getTrackingInfo = function(){
       setTimeout(function(){
         console.log('Updating Markers');
-        map.removeMarker[markers];
+        map.removeMarker(markers);
         markers = [];
         firebase.database().ref('/tracking/').once('value').then(function(snapshot) {
           console.log(snapshot.val());
@@ -93,25 +94,31 @@
             });
             */
             
-            // Generate Content
-            var beacon_html = '';
-            for(var beacon in result[key].beacons){
-              beacon_html += $($('<div>').html(result[key].beacons[beacon].name + ': ' + result[key].beacons[beacon].distance + 'm')).html();
-            }
-
-            var marker = map.addMarker({
-              lat: result[key].lat,
-              lng: result[key].long,
-              title: result[key].name,
-              infoWindow: {
-                content: beacon_html
+            // Skip if the content is old
+            var elapsed_ms = moment().diff(moment(result[key].lastUpdated));
+            
+            //if(elapsed_ms < 120000){
+            
+              // Generate Content
+              var beacon_html = '';
+              for(var beacon in result[key].beacons){
+                beacon_html += $($('<div>').html(result[key].beacons[beacon].name + ': ' + result[key].beacons[beacon].distance + 'm')).html();
               }
-            });
-            //console.log(marker);
-            markers.push[marker];
-            $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
-              map.setCenter(result[key].lat, result[key].long);
-            }));
+
+              var marker = map.addMarker({
+                lat: result[key].lat,
+                lng: result[key].long,
+                title: result[key].name,
+                infoWindow: {
+                  content: beacon_html
+                }
+              });
+              //console.log(marker);
+              markers.push[marker];
+              $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
+                map.setCenter(result[key].lat, result[key].long);
+              }));
+            //}
           }
           
           $('#users').html(userlist)
