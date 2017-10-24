@@ -14,7 +14,8 @@
         height: 100%;
     }
     #map {
-      width: 80%;
+      display:inline-block;
+      width: 70%;
       height: 90%;
       position: relative;
       background: #fff;
@@ -23,6 +24,7 @@
       border-radius: 2px;
     }
     #users{
+      display:inline-block;
       width:15%;
       height: 90%;
       position: relative;
@@ -82,6 +84,7 @@
         firebase.database().ref('/tracking/').once('value').then(function(snapshot) {
           console.log(snapshot.val());
           var result = snapshot.val();
+          var userlist = $('<ul>');
           for(var key in result){
             /*
             $.get( "ajax/test.html", function( data ) {
@@ -101,10 +104,14 @@
                 content: JSON.stringify(result[key].beacons)
               }
             });
-            console.log(marker);
+            //console.log(marker);
             markers.push[marker];
-
+            $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
+              map.setCenter(result[key].lat, result[key].long);
+            }));
           }
+          
+          $('#users').html(userlist)
           
           getTrackingInfo();
           //var username = (snapshot.val() && snapshot.val().username) || 'Anonymous';
