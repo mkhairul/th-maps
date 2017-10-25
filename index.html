@@ -115,13 +115,13 @@
               if(markers.length > 0)
               {
                 for(var marker in markers){
-                  console.log(marker);
-                  console.log('Maker ID: ', marker.id)
+                  console.log(markers[marker]);
+                  console.log('Maker ID: ', markers[marker].id)
                   console.log('Key:', key)
-                  if(marker.id === key){
+                  if(markers[marker].id === key){
                     console.log('Updating Marker');
-                    marker.setPosition(new google.maps.LatLng(result[key].lat, result[key].long));
-                    marker.infoWindow.setContent(beacon_html);
+                    markers[marker].setPosition(new google.maps.LatLng(result[key].lat, result[key].long));
+                    markers[marker].infoWindow.setContent(beacon_html);
                     console.log('Updating Position');
                   }else{
                     console.log('Adding new Marker');
@@ -135,7 +135,6 @@
                       }
                     });
                     //console.log(marker);
-                    markers.push[marker];
                     $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
                       map.setCenter(result[key].lat, result[key].long);
                     }));
