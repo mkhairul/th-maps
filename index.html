@@ -115,6 +115,8 @@
               if(markers.length > 0)
               {
                 for(var marker in markers){
+                  console.log('Maker ID: ', marker.id)
+                  console.log('Key:', key)
                   if(marker.id === key){
                     console.log('Updating Marker');
                     marker.setPosition(new google.maps.LatLng(result[key].lat, result[key].long));
