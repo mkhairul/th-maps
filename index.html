@@ -80,8 +80,8 @@
     
     var getTrackingInfo = function(){
       setTimeout(function(){
-        console.log('Updating Markers');
-        console.log('Total Markers:', markers)
+        //console.log('Updating Markers');
+        //console.log('Total Markers:', markers)
         //map.removeMarkers();
         //markers = [];
         firebase.database().ref('/tracking/').once('value').then(function(snapshot) {
@@ -116,10 +116,12 @@
               {
                 for(var marker in markers){
                   if(marker.id === key){
+                    console.log('Updating Marker');
                     marker.setPosition(new google.maps.LatLng(result[key].lat, result[key].long));
                     marker.infoWindow.setContent(beacon_html);
                     console.log('Updating Position');
                   }else{
+                    console.log('Adding new Marker');
                     var marker = map.addMarker({
                       id: key,
                       lat: result[key].lat,
@@ -138,6 +140,7 @@
                   }
                 }
               }else{
+                console.log('Adding new Marker');
                 var marker = map.addMarker({
                   id: key,
                   lat: result[key].lat,
