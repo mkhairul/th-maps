@@ -123,6 +123,9 @@
                     markers[marker].setPosition(new google.maps.LatLng(result[key].lat, result[key].long));
                     markers[marker].infoWindow.setContent(beacon_html);
                     console.log('Updating Position');
+                    $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
+                      map.setCenter(result[key].lat, result[key].long);
+                    }));
                   }else{
                     console.log('Adding new Marker');
                     var marker = map.addMarker({
