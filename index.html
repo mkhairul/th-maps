@@ -115,6 +115,7 @@
               if(markers.length > 0)
               {
                 for(var marker in markers){
+                  console.log(marker);
                   console.log('Maker ID: ', marker.id)
                   console.log('Key:', key)
                   if(marker.id === key){
@@ -138,7 +139,7 @@
                     $(userlist).append($('<li>').html($('<a>').html(result[key].name).attr('href', '#')).on('click', function(){
                       map.setCenter(result[key].lat, result[key].long);
                     }));
-
+                    markers.push(marker);
                   }
                 }
               }else{
